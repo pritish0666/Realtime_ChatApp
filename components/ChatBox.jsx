@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const ChatBox = ({ chat, currentUser }) => {
+const ChatBox = ({ chat, currentUser, currentChatId }) => {
   const otherUsers = chat?.members?.filter(
     (member) => member._id !== currentUser._id
   );
@@ -13,7 +13,10 @@ const ChatBox = ({ chat, currentUser }) => {
     chat?.messages?.length > 0 && chat?.messages[chat?.messages?.length - 1];
 
   return (
-    <div className="chat-box" onClick={()=>router.push(`chats/${chat._id}`)}>
+    <div
+      className={`chat-box ${chat._id === currentChatId ? "bg-blue-2" : ""}`}
+      onClick={() => router.push(`chats/${chat._id}`)}
+    >
       <div className="chat-info">
         {chat?.isGroup ? (
           <img
