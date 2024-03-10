@@ -29,3 +29,28 @@ export const GET = async (req, { params }) => {
     console.log(error);
   }
 };
+
+export const POST = async (req, { params }) => {
+  try {
+    await connectToDb();
+    const { chatId } = params;
+
+    const body = await req.json();
+    const { currentUserId } = body;
+
+    await Message.updateMany(
+      { chat: chatId },
+      { $addToSet: { seenBy: currentUserId } },
+      { new: true }
+    )
+      .populate({
+        path: "sender seenBy",
+        model: User,
+      })
+      .exec();
+
+    return new Response("seen all message by user", { status: 200 });
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -4,12 +4,36 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import ChatList from "@components/ChatList";
 import ChatDetails from "@components/ChatDetails";
+import { useEffect } from "react";
 
 const chatPage = () => {
   const { chatId } = useParams();
   //console.log(chatId)
   const { data: session } = useSession();
   const currentUser = session?.user;
+
+  const seenMessages = async () => {
+    try {
+      await fetch(`/api/chats/${chatId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          currentUserId: currentUser._id
+        })
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    useEffect(()=>{
+      if(currentUser && chatId){
+        seenMessages()
+
+      }
+    },[currentUser,chatId])
+  };
 
   return (
     <div className="main-container">
