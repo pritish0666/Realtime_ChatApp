@@ -1,12 +1,13 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Loader from "./Loader";
 import Link from "next/link";
 import { AddPhotoAlternate } from "@mui/icons-material";
 import { CldUploadButton } from "next-cloudinary";
 import MessageBox from "./MessageBox";
+import { pusherClient } from "@lib/pusher";
 
 const ChatDetails = (chatId) => {
   //console.log(chatId)
@@ -82,6 +83,28 @@ const ChatDetails = (chatId) => {
     }
   };
 
+  useEffect(() => {
+    pusherClient.subscribe(chatId.chatId);
+    const handleMessage = async (newMessage) => {
+      setChat((prevChat) => {
+        return { ...prevChat, messages: [...prevChat.messages, newMessage] };
+      });
+    };
+    pusherClient.bind("new-message", handleMessage);
+
+    return () => {
+      pusherClient.unbind("new-message", handleMessage);
+      pusherClient.unsubscribe(chatId);
+    };
+  }, [chatId]);
+
+  const bottomRef = useRef(null);
+
+  
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat?.messages]);
+
   return loading ? (
     <Loader />
   ) : (
@@ -123,6 +146,7 @@ const ChatDetails = (chatId) => {
         {chat?.messages?.map((message, index) => (
           <MessageBox key={index} message={message} currentUser={currentUser} />
         ))}
+        <div ref={bottomRef} />
       </div>
       <div className="send-message">
         <div className="prepare-message">

@@ -2,6 +2,7 @@ import { connectToDb } from "@mongodb";
 import Message from "@models/Message";
 import Chat from "@models/Chat";
 import User from "@models/User";
+import { pusherServer } from "@lib/pusher";
 
 export const POST = async (req) => {
   try {
@@ -12,9 +13,10 @@ export const POST = async (req) => {
 
     const { currentUserId, chatId, text, photo } = body;
     console.log(chatId.chatId);
+    const currentUser = await User.findById(currentUserId);
     const newMessage = await Message.create({
       chat: chatId.chatId,
-      sender: currentUserId,
+      sender: currentUser,
       text,
       photo,
       seenBy: currentUserId,
@@ -45,6 +47,22 @@ export const POST = async (req) => {
         model: User,
       })
       .exec();
+
+    await pusherServer.trigger(chatId.chatId, "new-message", newMessage);
+    const lastMessage = updatedChat.messages[updatedChat.messages.length - 1];
+
+    updatedChat.members.forEach( async(member) => {
+      try {
+        await pusherServer.trigger(member._id.toString(), "update-chat", {
+          id:chatId.chatId,
+          messages:[lastMessage],
+        });
+        
+      } catch (err) {
+        console.log(err);
+        
+      }
+    });
 
     return new Response(JSON.stringify(updatedChat), { status: 200 });
   } catch (error) {
