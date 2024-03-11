@@ -65,7 +65,6 @@ const GroupInfo = () => {
       if (res.ok) {
         router.push(`/chats/${chatId}`);
       }
-
     } catch (error) {
       console.log(error);
     }
@@ -89,7 +88,9 @@ const GroupInfo = () => {
           />
           <GroupOutlined sx={{ color: "#737373" }} />
         </div>
-        {error?.groupName && <p className="text-red-500">{error.groupName.message}</p>}
+        {error?.groupName && (
+          <p className="text-red-500">{error.groupName.message}</p>
+        )}
 
         <div className="flex items-center justify-between">
           <img
@@ -100,7 +101,7 @@ const GroupInfo = () => {
           <CldUploadButton
             options={{ maxFiles: 1 }}
             onSuccess={uploadPhoto}
-            uploadPreset="upecg01j"
+            uploadPreset="ceenahvk"
           >
             <p className="text-body-bold">Upload new photo</p>
           </CldUploadButton>
@@ -108,7 +109,9 @@ const GroupInfo = () => {
 
         <div className="flex flex-wrap gap-3">
           {chat?.members?.map((member, index) => (
-            <p className="selected-contact" key={index}>{member.username}</p>
+            <p className="selected-contact" key={index}>
+              {member.username}
+            </p>
           ))}
         </div>
 

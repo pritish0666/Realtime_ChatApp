@@ -8,6 +8,7 @@ import { AddPhotoAlternate } from "@mui/icons-material";
 import { CldUploadButton } from "next-cloudinary";
 import MessageBox from "./MessageBox";
 import { pusherClient } from "@lib/pusher";
+import { useRouter } from "next/navigation";
 
 const ChatDetails = (chatId) => {
   //console.log(chatId)
@@ -99,6 +100,7 @@ const ChatDetails = (chatId) => {
   }, [chatId]);
 
   const bottomRef = useRef(null);
+  const router = useRouter();
 
   
   useEffect(() => {
@@ -108,20 +110,22 @@ const ChatDetails = (chatId) => {
   return loading ? (
     <Loader />
   ) : (
+    <div className="pb-20">
     <div className="chat-details">
       <div className="chat-header">
         {chat?.isGroup ? (
           <>
-            <Link
+            {/* <Link
               href="/chats/[chatId]/group-info"
-              as={`/chats/${chatId}/group-info`}
-            >
+              //as={`/chats/${chatId}/group-info`}
+            > */}
               <img
                 src={chat?.groupImage || "/assets/group.png"}
                 alt="group-photo"
                 className="profilePhoto"
+                onClick={()=>router.push(`/chats/${chatId.chatId}/group-info`)}
               />
-            </Link>
+            {/* </Link> */}
             <div className="text">
               <p>
                 {chat?.groupName} &#160; &#183; &#160; {chat?.members?.length}
@@ -182,6 +186,7 @@ const ChatDetails = (chatId) => {
           />
         </div>
       </div>
+    </div>
     </div>
   );
 };

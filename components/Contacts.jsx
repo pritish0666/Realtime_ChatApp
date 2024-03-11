@@ -63,8 +63,11 @@ const Contacts = () => {
       }),
     });
     const chat = await res.json();
+    console.log(chat._id)
     if (res.ok) {
       router.push(`/chats/${chat._id}`);
+    }else{
+      router.push(`/chats`);
     }
   };
 

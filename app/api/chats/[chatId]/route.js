@@ -6,8 +6,9 @@ import Message from "@models/Message";
 export const GET = async (req, { params }) => {
   try {
     await connectToDb();
+    
     const { chatId } = params;
-    //console.log(chatId)
+    
 
     const chat = await Chat.findById(chatId)
       .populate({

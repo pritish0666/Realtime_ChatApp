@@ -32,7 +32,7 @@ export const POST = async (req) => {
         );
       });
       Promise.all(updateAllMembers);
-      chat.members.map((member) => {
+      chat.members.map(async (member) => {
         pusherServer.trigger(member, "new-chat", chat);
       });
     }

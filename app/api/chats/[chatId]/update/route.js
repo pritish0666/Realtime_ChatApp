@@ -1,9 +1,9 @@
 import Chat from "@models/Chat"
-import { connectToDB } from "@mongodb"
+import { connectToDb } from "@mongodb"
 
 export const POST = async (req, { params }) => {
   try {
-    await connectToDB()
+    await connectToDb()
 
     const body = await req.json()
 
