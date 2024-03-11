@@ -22,7 +22,9 @@ const Contacts = () => {
         search !== "" ? `/api/users/searchContact/${search}` : "/api/users"
       );
       const data = await res.json();
+      //console.log(data);
       setContacts(data.filter((contact) => contact._id !== currentUser._id));
+      console.log(contacts);
       setLoading(false);
     } catch (error) {
       console.log(error);

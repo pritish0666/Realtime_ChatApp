@@ -6,6 +6,10 @@ export const GET = async (req,res) =>{
         await connectToDb()
         const allUsers = await User.find()
 
+        // allUsers.map(async (user) => {
+        //     user.password = undefined
+        // })
+
         return new Response(JSON.stringify(allUsers), {status: 200})
         
     } catch (error) {
